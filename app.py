@@ -55,17 +55,19 @@ def get_weather():
         "temperature": weather_data["main"]["temp"],
         "description": weather_data["weather"][0]["description"],
         "icon": weather_data["weather"][0]["icon"],
-        "hourlyForecast": [
-            {
-                "time": item["dt_txt"].split(" ")[1][:5],
-                "temp": item["main"]["temp"],
-                "description": item["weather"][0]["description"]
-            }
-            for item in forecast_data.get("list", [])[:5]  # ดึงข้อมูล 5 ชั่วโมงแรก
-        ]
+       "hourlyForecast": [
+    {
+        "time": item["dt_txt"].split(" ")[1][:5],  # เวลาจาก forecast
+        "temp": item["main"]["temp"],             # อุณหภูมิ
+        "description": item["weather"][0]["description"],  # คำอธิบาย
+        "icon": item["weather"][0]["icon"]        # ไอคอน
+    }
+    for item in forecast_data.get("list", [])[:5]  # จำกัดเฉพาะ 5 ชั่วโมง
+]
+
     }
     return jsonify(result)
 
 # รันแอปพลิเคชัน Flask
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)

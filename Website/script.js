@@ -29,22 +29,34 @@ async function getWeather() {
         const data = await response.json();
 
         // แสดงข้อมูลที่ได้รับ
-        tempDiv.innerHTML = `<h3>Temperature: ${data.temperature}°C</h3>`;
-        weatherInfoDiv.innerHTML = `<p>Description: ${data.description}</p>`;
+        tempDiv.innerHTML = `<h3>${data.temperature}°C</h3> 
+                            <h4>${data.city}</h4>`;       
+        weatherInfoDiv.innerHTML = `<p>${data.description}</p>`;
 
         // แสดงไอคอนสภาพอากาศ (ถ้ามีข้อมูล)
         if (data.icon) {
             weatherIcon.src = `http://openweathermap.org/img/wn/${data.icon}@2x.png`;
             weatherIcon.alt = data.description;
+            weatherIcon.style.display = 'block'; // เปิดการแสดงผล
         }
+        
 
         // หากมีข้อมูลพยากรณ์อากาศรายชั่วโมง
         if (data.hourlyForecast) {
-            hourlyForecastDiv.innerHTML = '<h3>Hourly Forecast:</h3>' +
-                data.hourlyForecast.map(hour => 
-                    `<p><strong>${hour.time}</strong>: ${hour.temp}°C, ${hour.description}</p>`
-                ).join('');
+            hourlyForecastDiv.innerHTML = '';
+            data.hourlyForecast.forEach(hour => {
+            const forecast = document.createElement('div');
+            forecast.className = 'hourly-item';
+            forecast.innerHTML = `
+            <p>${hour.time}</p>
+            <img src="http://openweathermap.org/img/wn/${hour.icon}@2x.png" alt="${hour.description}">
+            <p>${hour.temp}°C</p>
+            
+    `;
+    hourlyForecastDiv.appendChild(forecast);
+});
         }
+        
     } catch (error) {
         tempDiv.innerHTML = `<p>Failed to fetch weather data. Please try again later.</p>`;
         console.error('Error fetching weather data:', error);
